@@ -71,21 +71,18 @@ def solarized_dark():
     """Solarized dark"""
     # dircolors
     linkname = getlinkname("dircolors")
-    # filename = ("dircolors.256dark" if NUMCOLORS >= 256
-    #             else "dircolors.ansi-dark")
-    filename = "dircolors.ansi-dark"
+    filename = ("dircolors.256dark" if NUMCOLORS >= 256
+                else "dircolors.ansi-dark")
     mklink_repo("seebi", "dircolors-solarized", filename, linkname)
     # tmux
     linkname = getlinkname("tmux")
-    # filename = ("tmuxcolors-256.conf" if NUMCOLORS >= 256
-    #             else "tmuxcolors-dark.conf")
-    filename = "tmuxcolors-dark.conf"
+    filename = ("tmuxcolors-256.conf" if NUMCOLORS >= 256
+                else "tmuxcolors-dark.conf")
     mklink_repo("seebi", "tmux-colors-solarized", filename, linkname)
     # vim
     linkname = getlinkname("vim")
-    # fullpath = SCRIPTPATH + ("/vim/solarized-dark-256.vim" if NUMCOLORS >= 256
-    #                          else "/vim/solarized-dark-16.vim")
-    fullpath = SCRIPTPATH + "/vim/solarized-dark-16.vim"
+    fullpath = SCRIPTPATH + ("/vim/solarized-dark-256.vim" if NUMCOLORS >= 256
+                             else "/vim/solarized-dark-16.vim")
     mklink(fullpath, linkname)
 
 
@@ -93,21 +90,18 @@ def solarized_light():
     """Solarized light"""
     # dircolors
     linkname = getlinkname("dircolors")
-    # filename = ("dircolors.ansi-universal" if NUMCOLORS >= 256
-    #             else "dircolors.ansi-light")
-    filename = "dircolors.ansi-light"
+    filename = ("dircolors.ansi-universal" if NUMCOLORS >= 256
+                else "dircolors.ansi-light")
     mklink_repo("seebi", "dircolors-solarized", filename, linkname)
     # tmux
     linkname = getlinkname("tmux")
-    # filename = ("tmuxcolors-256.conf" if NUMCOLORS >= 256
-    #             else "tmuxcolors-light.conf")
-    filename = "tmuxcolors-light.conf"
+    filename = ("tmuxcolors-256.conf" if NUMCOLORS >= 256
+                else "tmuxcolors-light.conf")
     mklink_repo("seebi", "tmux-colors-solarized", filename, linkname)
     # vim
     linkname = getlinkname("vim")
-    # fullpath = SCRIPTPATH + ("/vim/solarized-light-256.vim" if NUMCOLORS >= 256
-    #                          else "/vim/solarized-light-16.vim")
-    fullpath = SCRIPTPATH + "/vim/solarized-light-16.vim"
+    fullpath = SCRIPTPATH + ("/vim/solarized-light-256.vim" if NUMCOLORS >= 256
+                             else "/vim/solarized-light-16.vim")
     mklink(fullpath, linkname)
 
 
