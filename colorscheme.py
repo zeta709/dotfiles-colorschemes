@@ -67,6 +67,34 @@ def default():
     rmlink_safe(linkname)
 
 
+def selenized_dark():
+    """Selenized dark"""
+    # dircolors
+    linkname = getlinkname("dircolors")
+    rmlink_safe(linkname)
+    # tmux
+    linkname = getlinkname("tmux")
+    rmlink_safe(linkname)
+    # vim
+    linkname = getlinkname("vim")
+    fullpath = SCRIPTPATH + "/vim/selenized-dark.vim"
+    mklink(fullpath, linkname)
+
+
+def selenized_light():
+    """Selenized light"""
+    # dircolors
+    linkname = getlinkname("dircolors")
+    rmlink_safe(linkname)
+    # tmux
+    linkname = getlinkname("tmux")
+    rmlink_safe(linkname)
+    # vim
+    linkname = getlinkname("vim")
+    fullpath = SCRIPTPATH + "/vim/selenized-light.vim"
+    mklink(fullpath, linkname)
+
+
 def solarized_dark():
     """Solarized dark"""
     # dircolors
@@ -107,6 +135,8 @@ def solarized_light():
 
 THEMES = [
     ("Default", default),
+    ("Selenized dark (24-bit)", selenized_dark),
+    ("Selenized light (24-bit)", selenized_light),
     ("Solarized dark", solarized_dark),
     ("Solarized light", solarized_light),
 ]
