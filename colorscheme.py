@@ -4,7 +4,7 @@
 """Colorscheme"""
 
 # TODO: split utility functions and theme functions into two files
-# TODO: dircolors, tmux, vim, mutt, etc.
+# TODO: tmux, vim, mutt, etc.
 # TODO: clone/fetch repositories
 
 import curses
@@ -38,16 +38,38 @@ def mklink(username, repository, path, linkname):
         os.symlink(fullpath, linkname)
 
 
+def getlinkname(module):
+    """Get the linkname for the module"""
+    if module == "dircolors":
+        return HOME + "/.dircolors"
+    return None
+
+
 def default():
     """Default"""
+    # dircolors
+    linkname = getlinkname("dircolors")
+    rmlink_safe(linkname)
 
 
 def solarized_dark():
     """Solarized dark"""
+    # dircolors
+    linkname = getlinkname("dircolors")
+    # filename = ("dircolors.256dark" if NUMCOLORS >= 256
+    #             else "dircolors.ansi-dark")
+    filename = "dircolors.ansi-dark"
+    mklink("seebi", "dircolors-solarized", filename, linkname)
 
 
 def solarized_light():
     """Solarized light"""
+    # dircolors
+    linkname = getlinkname("dircolors")
+    # filename = ("dircolors.ansi-universal" if NUMCOLORS >= 256
+    #             else "dircolors.ansi-light")
+    filename = "dircolors.ansi-light"
+    mklink("seebi", "dircolors-solarized", filename, linkname)
 
 
 THEMES = [
