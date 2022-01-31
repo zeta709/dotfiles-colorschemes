@@ -1,3 +1,4 @@
 sh/.term.sh
 tmux/.colors.tmux.conf
 tmux/.term.tmux.conf
+vim/.colors.vim

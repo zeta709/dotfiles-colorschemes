@@ -23,6 +23,12 @@ install() (
 	if ! grep -Fq ".colors.tmux.conf" "${HOME}/.tmux.conf"; then
 		printf 'source -q "%s"\n' "$file" >> "${HOME}/.tmux.conf"
 	fi
+
+	file="${scriptpath}/vim/.colors.vim"
+	[ ! -e "$file" ] && ln -s "/dev/null" "$file"
+	if ! grep -Fq ".colors.vim" "${HOME}/.vimrc"; then
+		printf 'source "%s"\n' $file >> "${HOME}/.vimrc"
+	fi
 )
 
 install

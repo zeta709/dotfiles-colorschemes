@@ -31,19 +31,26 @@ def rmlink_safe(linkname):
     return True
 
 
-def mklink(username, repository, path, linkname):
+def mklink(fullpath, linkname):
     """Create a symbolic link to the path safely"""
-    fullpath = "/".join([SCRIPTPATH, "repos", username, repository, path])
     if rmlink_safe(linkname):
         os.symlink(fullpath, linkname)
+
+
+def mklink_repo(username, repository, path, linkname):
+    """Create a symbolic link to the path safely"""
+    fullpath = "/".join([SCRIPTPATH, "repos", username, repository, path])
+    mklink(fullpath, linkname)
 
 
 def getlinkname(module):
     """Get the linkname for the module"""
     if module == "dircolors":
         return HOME + "/.dircolors"
-    elif module == "tmux":
+    if module == "tmux":
         return SCRIPTPATH + "/tmux/.colors.tmux.conf"
+    if module == "vim":
+        return SCRIPTPATH + "/vim/.colors.vim"
     return None
 
 
@@ -55,6 +62,9 @@ def default():
     # tmux
     linkname = getlinkname("tmux")
     rmlink_safe(linkname)
+    # vim
+    linkname = getlinkname("vim")
+    rmlink_safe(linkname)
 
 
 def solarized_dark():
@@ -64,13 +74,19 @@ def solarized_dark():
     # filename = ("dircolors.256dark" if NUMCOLORS >= 256
     #             else "dircolors.ansi-dark")
     filename = "dircolors.ansi-dark"
-    mklink("seebi", "dircolors-solarized", filename, linkname)
+    mklink_repo("seebi", "dircolors-solarized", filename, linkname)
     # tmux
     linkname = getlinkname("tmux")
     # filename = ("tmuxcolors-256.conf" if NUMCOLORS >= 256
     #             else "tmuxcolors-dark.conf")
     filename = "tmuxcolors-dark.conf"
-    mklink("seebi", "tmux-colors-solarized", filename, linkname)
+    mklink_repo("seebi", "tmux-colors-solarized", filename, linkname)
+    # vim
+    linkname = getlinkname("vim")
+    # fullpath = SCRIPTPATH + ("/vim/solarized-dark-256.vim" if NUMCOLORS >= 256
+    #                          else "/vim/solarized-dark-16.vim")
+    fullpath = SCRIPTPATH + "/vim/solarized-dark-16.vim"
+    mklink(fullpath, linkname)
 
 
 def solarized_light():
@@ -80,13 +96,19 @@ def solarized_light():
     # filename = ("dircolors.ansi-universal" if NUMCOLORS >= 256
     #             else "dircolors.ansi-light")
     filename = "dircolors.ansi-light"
-    mklink("seebi", "dircolors-solarized", filename, linkname)
+    mklink_repo("seebi", "dircolors-solarized", filename, linkname)
     # tmux
     linkname = getlinkname("tmux")
     # filename = ("tmuxcolors-256.conf" if NUMCOLORS >= 256
     #             else "tmuxcolors-light.conf")
     filename = "tmuxcolors-light.conf"
-    mklink("seebi", "tmux-colors-solarized", filename, linkname)
+    mklink_repo("seebi", "tmux-colors-solarized", filename, linkname)
+    # vim
+    linkname = getlinkname("vim")
+    # fullpath = SCRIPTPATH + ("/vim/solarized-light-256.vim" if NUMCOLORS >= 256
+    #                          else "/vim/solarized-light-16.vim")
+    fullpath = SCRIPTPATH + "/vim/solarized-light-16.vim"
+    mklink(fullpath, linkname)
 
 
 THEMES = [
