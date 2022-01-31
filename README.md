@@ -2,23 +2,27 @@
 
 ## Installation
 
-Some installation procedure have not been automated yet.
+``` sh
+$ ./install.sh
+```
+
+However, some installation procedure have not been automated yet.
 
 ### Other repositories
 
-Clone repositories you need: 
+Clone repositories you need:
 ``` sh
 cd ".colorscheme/repos"
-mkdir "seebi" && cd $_
+mkdir "seebi" && cd "$_"
 git clone https://github.com/seebi/dircolors-solarized.git
 git clone https://github.com/seebi/tmux-colors-solarized.git
 
 cd ".colorscheme/repos"
-mkdir "altercation" && $_
+mkdir "altercation" && cd "$_"
 git clone https://github.com/altercation/mutt-colors-solarized.git
 ```
 
-### LS_COLORS
+### LS_COLORS for Selenized
 
 Selenized `LS_COLORS`:
 ``` sh
@@ -40,3 +44,14 @@ Plug 'romainl/flattened'
 Plug 'jan-warchol/selenized', { 'rtp': 'editors/vim' }
 call plug#end()
 ```
+
+## Applying color scheme
+
+``` sh
+$ ./term.sh
+$ ./colorscheme.py
+```
+
+You have to set your terminal settings properly. Refer
+[altercation/solarized](https://github.com/altercation/solarized) or
+[jan-warchol/selenized](https://github.com/jan-warchol/selenized).
