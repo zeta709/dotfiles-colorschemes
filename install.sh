@@ -18,6 +18,11 @@ install() (
 	if ! grep -Fq ".term.tmux.conf" "${HOME}/.tmux.conf"; then
 		printf 'source "%s"\n' "$file" >> "${HOME}/.tmux.conf"
 	fi
+
+	file="${scriptpath}/tmux/.colors.tmux.conf"
+	if ! grep -Fq ".colors.tmux.conf" "${HOME}/.tmux.conf"; then
+		printf 'source -q "%s"\n' "$file" >> "${HOME}/.tmux.conf"
+	fi
 )
 
 install

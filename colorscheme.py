@@ -4,7 +4,7 @@
 """Colorscheme"""
 
 # TODO: split utility functions and theme functions into two files
-# TODO: tmux, vim, mutt, etc.
+# TODO: vim, mutt, etc.
 # TODO: clone/fetch repositories
 
 import curses
@@ -42,6 +42,8 @@ def getlinkname(module):
     """Get the linkname for the module"""
     if module == "dircolors":
         return HOME + "/.dircolors"
+    elif module == "tmux":
+        return SCRIPTPATH + "/tmux/.colors.tmux.conf"
     return None
 
 
@@ -49,6 +51,9 @@ def default():
     """Default"""
     # dircolors
     linkname = getlinkname("dircolors")
+    rmlink_safe(linkname)
+    # tmux
+    linkname = getlinkname("tmux")
     rmlink_safe(linkname)
 
 
@@ -60,6 +65,12 @@ def solarized_dark():
     #             else "dircolors.ansi-dark")
     filename = "dircolors.ansi-dark"
     mklink("seebi", "dircolors-solarized", filename, linkname)
+    # tmux
+    linkname = getlinkname("tmux")
+    # filename = ("tmuxcolors-256.conf" if NUMCOLORS >= 256
+    #             else "tmuxcolors-dark.conf")
+    filename = "tmuxcolors-dark.conf"
+    mklink("seebi", "tmux-colors-solarized", filename, linkname)
 
 
 def solarized_light():
@@ -70,6 +81,12 @@ def solarized_light():
     #             else "dircolors.ansi-light")
     filename = "dircolors.ansi-light"
     mklink("seebi", "dircolors-solarized", filename, linkname)
+    # tmux
+    linkname = getlinkname("tmux")
+    # filename = ("tmuxcolors-256.conf" if NUMCOLORS >= 256
+    #             else "tmuxcolors-light.conf")
+    filename = "tmuxcolors-light.conf"
+    mklink("seebi", "tmux-colors-solarized", filename, linkname)
 
 
 THEMES = [
