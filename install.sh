@@ -2,7 +2,7 @@
 # vim: noexpandtab:sw=4:ts=4
 
 # NOTE: this way to get the scriptpath is not perfect
-scriptpath=$(unset CDPATH && cd -- "$(dirname -- "$0")" >/dev/null 2>&1 && pwd -P)
+scriptpath=$(unset CDPATH && cd -- "$(dirname -- "$0")" && pwd -P)
 
 install() (
 	cd "$scriptpath" || return 1
@@ -27,7 +27,7 @@ install() (
 	file="${scriptpath}/vim/.colors.vim"
 	[ ! -e "$file" ] && ln -s "/dev/null" "$file"
 	if ! grep -Fq ".colors.vim" "${HOME}/.vimrc"; then
-		printf "execute 'source' fnameescape('%s')\n" "$file" >> "${HOME}/.vimrc"
+		printf "exec 'source' fnameescape('%s')\n" "$file" >> "${HOME}/.vimrc"
 	fi
 )
 

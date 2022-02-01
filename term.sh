@@ -2,7 +2,7 @@
 # vim: noexpandtab:sw=4:ts=4
 
 # NOTE: this way to get the scriptpath is not perfect
-scriptpath=$(unset CDPATH && cd -- "$(dirname -- "$0")" >/dev/null 2>&1 && pwd -P)
+scriptpath=$(unset CDPATH && cd -- "$(dirname -- "$0")" && pwd -P)
 
 # replace the exsiting link only if it is a symbolic link
 mklink_safe() {
