@@ -30,13 +30,13 @@ def rmlink_safe(linkpath):
 
 
 def mklink(target, linkpath):
-    """Create a symbolic link to the path safely"""
+    """Create or replace a symbolic link to the path safely"""
     if rmlink_safe(linkpath):
         linkpath.symlink_to(target)
 
 
 def mklink_repo(username, repository, path, linkpath):
-    """Create a symbolic link to the path safely"""
+    """Create or replace a symbolic link to the path safely"""
     try:
         tmp = linkpath.relative_to(SCRIPTPATH)
         base = Path("../" * (len(tmp.parents) - 1))
@@ -63,104 +63,74 @@ def getlinkpath(module):
 def default():
     """Default"""
     # dircolors
-    linkpath = getlinkpath("dircolors")
-    rmlink_safe(linkpath)
+    rmlink_safe(getlinkpath("dircolors"))
     # tmux
-    linkpath = getlinkpath("tmux")
-    rmlink_safe(linkpath)
+    rmlink_safe(getlinkpath("tmux"))
     # vim
-    linkpath = getlinkpath("vim")
-    mklink("/dev/null", linkpath)
+    mklink("/dev/null", getlinkpath("vim"))
 
 
-def selenized_dark():
-    """Selenized dark"""
+def selenized(**kwargs):
+    """Selenized dark/light"""
     # dircolors
-    linkpath = getlinkpath("dircolors")
-    rmlink_safe(linkpath)
+    rmlink_safe(getlinkpath("dircolors"))
     # tmux
-    linkpath = getlinkpath("tmux")
-    rmlink_safe(linkpath)
+    rmlink_safe(getlinkpath("tmux"))
     # vim
-    linkpath = getlinkpath("vim")
-    mklink("selenized-dark.vim", linkpath)
+    filename = "selenized-{variant}.vim".format_map(kwargs)
+    mklink(filename, getlinkpath("vim"))
 
 
-def selenized_light():
-    """Selenized light"""
-    # dircolors
-    linkpath = getlinkpath("dircolors")
-    rmlink_safe(linkpath)
-    # tmux
-    linkpath = getlinkpath("tmux")
-    rmlink_safe(linkpath)
-    # vim
-    linkpath = getlinkpath("vim")
-    mklink("selenized-light.vim", linkpath)
-
-
-def solarized_dark():
-    """Solarized dark"""
+def solarized(**kwargs):
+    """Solarized dark/light"""
     # dircolors
     linkpath = getlinkpath("dircolors")
     filename = ("dircolors.256dark" if NUMCOLORS >= 256
-                else "dircolors.ansi-dark")
+                else "dircolors.ansi-{variant}").format_map(kwargs)
     mklink_repo("seebi", "dircolors-solarized", filename, linkpath)
     # tmux
     linkpath = getlinkpath("tmux")
     filename = ("tmuxcolors-256.conf" if NUMCOLORS >= 256
-                else "tmuxcolors-dark.conf")
+                else "tmuxcolors-{variant}.conf").format_map(kwargs)
     mklink_repo("seebi", "tmux-colors-solarized", filename, linkpath)
     # vim
     linkpath = getlinkpath("vim")
-    filename = ("solarized-dark-256.vim" if NUMCOLORS >= 256
-                else "solarized-dark-16.vim")
-    mklink(filename, linkpath)
-
-
-def solarized_light():
-    """Solarized light"""
-    # dircolors
-    linkpath = getlinkpath("dircolors")
-    filename = ("dircolors.ansi-universal" if NUMCOLORS >= 256
-                else "dircolors.ansi-light")
-    mklink_repo("seebi", "dircolors-solarized", filename, linkpath)
-    # tmux
-    linkpath = getlinkpath("tmux")
-    filename = ("tmuxcolors-256.conf" if NUMCOLORS >= 256
-                else "tmuxcolors-light.conf")
-    mklink_repo("seebi", "tmux-colors-solarized", filename, linkpath)
-    # vim
-    linkpath = getlinkpath("vim")
-    filename = ("solarized-light-256.vim" if NUMCOLORS >= 256
-                else "solarized-light-16.vim")
+    filename = ("solarized-{variant}-256.vim" if NUMCOLORS >= 256
+                else "solarized-{variant}-16.vim").format_map(kwargs)
     mklink(filename, linkpath)
 
 
 THEMES = [
     ("Default", default),
-    ("Selenized dark (24-bit)", selenized_dark),
-    ("Selenized light (24-bit)", selenized_light),
-    ("Solarized dark", solarized_dark),
-    ("Solarized light", solarized_light),
+    ("Selenized dark (24-bit)", lambda: selenized(variant="dark")),
+    ("Selenized light (24-bit)", lambda: selenized(variant="light")),
+    ("Solarized dark", lambda: solarized(variant="dark")),
+    ("Solarized light", lambda: solarized(variant="light")),
 ]
 
-print("Choose your option:")
-for idx, theme in enumerate(THEMES):
-    print("{idx}) {name}".format(idx=idx, name=theme[0]))
 
-try:
-    ANS = int(input("#? "))
-except EOFError:
-    sys.exit(0)
-except ValueError:
-    print("Invalid input")
-    sys.exit(1)
-if ANS < 0 or ANS >= len(THEMES):
-    print("Invalid input")
-    sys.exit(1)
-elif not callable(THEMES[ANS][1]):
-    print("Error")
-    sys.exit(1)
+def main():
+    """main"""
+    print("Choose your option:")
+    for idx, theme in enumerate(THEMES):
+        print("{idx}) {name}".format(idx=idx, name=theme[0]))
 
-THEMES[ANS][1]()
+    try:
+        ans = int(input("#? "))
+    except EOFError:
+        sys.exit(0)
+    except ValueError:
+        print("Invalid input")
+        sys.exit(1)
+    if ans < 0 or ans >= len(THEMES):
+        print("Invalid input")
+        sys.exit(1)
+    if not callable(THEMES[ans][1]):
+        print("Error")
+        sys.exit(1)
+
+    THEMES[ans][1]()
+
+
+if __name__ == '__main__':
+    main()
