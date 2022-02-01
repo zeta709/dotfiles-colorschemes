@@ -11,7 +11,6 @@ import curses
 import sys
 from pathlib import Path
 
-# TODO: use relpath if SCRIPTPATH is under HOME
 SCRIPTPATH = Path(__file__).resolve().parent
 HOME = Path.home()
 
@@ -30,16 +29,24 @@ def rmlink_safe(linkpath):
     return True
 
 
-def mklink(fullpath, linkpath):
+def mklink(target, linkpath):
     """Create a symbolic link to the path safely"""
     if rmlink_safe(linkpath):
-        linkpath.symlink_to(fullpath)
+        linkpath.symlink_to(target)
 
 
 def mklink_repo(username, repository, path, linkpath):
     """Create a symbolic link to the path safely"""
-    fullpath = SCRIPTPATH.joinpath("repos", username, repository, path)
-    mklink(fullpath, linkpath)
+    try:
+        tmp = linkpath.relative_to(SCRIPTPATH)
+        base = Path("../" * (len(tmp.parents) - 1))
+    except ValueError:
+        try:
+            base = SCRIPTPATH.relative_to(linkpath.parent)
+        except ValueError:
+            base = SCRIPTPATH
+    path = base.joinpath("repos", username, repository, path)
+    mklink(path, linkpath)
 
 
 def getlinkpath(module):
@@ -76,8 +83,7 @@ def selenized_dark():
     rmlink_safe(linkpath)
     # vim
     linkpath = getlinkpath("vim")
-    fullpath = SCRIPTPATH.joinpath("vim/selenized-dark.vim")
-    mklink(fullpath, linkpath)
+    mklink("selenized-dark.vim", linkpath)
 
 
 def selenized_light():
@@ -90,8 +96,7 @@ def selenized_light():
     rmlink_safe(linkpath)
     # vim
     linkpath = getlinkpath("vim")
-    fullpath = SCRIPTPATH.joinpath("vim/selenized-light.vim")
-    mklink(fullpath, linkpath)
+    mklink("selenized-light.vim", linkpath)
 
 
 def solarized_dark():
@@ -108,9 +113,9 @@ def solarized_dark():
     mklink_repo("seebi", "tmux-colors-solarized", filename, linkpath)
     # vim
     linkpath = getlinkpath("vim")
-    filename = ("vim/solarized-dark-256.vim" if NUMCOLORS >= 256
-                else "vim/solarized-dark-16.vim")
-    mklink(SCRIPTPATH.joinpath(filename), linkpath)
+    filename = ("solarized-dark-256.vim" if NUMCOLORS >= 256
+                else "solarized-dark-16.vim")
+    mklink(filename, linkpath)
 
 
 def solarized_light():
@@ -127,9 +132,9 @@ def solarized_light():
     mklink_repo("seebi", "tmux-colors-solarized", filename, linkpath)
     # vim
     linkpath = getlinkpath("vim")
-    filename = ("vim/solarized-light-256.vim" if NUMCOLORS >= 256
-                else "vim/solarized-light-16.vim")
-    mklink(SCRIPTPATH.joinpath(filename), linkpath)
+    filename = ("solarized-light-256.vim" if NUMCOLORS >= 256
+                else "solarized-light-16.vim")
+    mklink(filename, linkpath)
 
 
 THEMES = [
