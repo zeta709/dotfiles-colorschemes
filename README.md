@@ -1,5 +1,7 @@
 # dotfiles-colorschemes
 
+[![Pylint](https://github.com/zeta709/dotfiles-colorschemes/actions/workflows/pylint.yml/badge.svg)](https://github.com/zeta709/dotfiles-colorschemes/actions/workflows/pylint.yml)
+
 ## Installation
 
 ``` sh
