@@ -23,8 +23,7 @@ def rmlink_safe(linkpath):
     if linkpath.is_symlink():
         linkpath.unlink()
     if linkpath.exists():
-        print("'{}' is not a symbolic link; "
-              "it will not be replaced.".format(str(linkpath)))
+        print(f"'{linkpath}' is not a symbolic link; it will not be replaced.")
         return False
     return True
 
@@ -70,33 +69,33 @@ def default():
     mklink("/dev/null", getlinkpath("vim"))
 
 
-def selenized(**kwargs):
+def selenized(variant):
     """Selenized dark/light"""
     # dircolors
     rmlink_safe(getlinkpath("dircolors"))
     # tmux
     rmlink_safe(getlinkpath("tmux"))
     # vim
-    filename = "selenized-{variant}.vim".format_map(kwargs)
+    filename = f"selenized-{variant}.vim"
     mklink(filename, getlinkpath("vim"))
 
 
-def solarized(**kwargs):
+def solarized(variant):
     """Solarized dark/light"""
     # dircolors
     linkpath = getlinkpath("dircolors")
     filename = ("dircolors.256dark" if NUMCOLORS >= 256
-                else "dircolors.ansi-{variant}").format_map(kwargs)
+                else f"dircolors.ansi-{variant}")
     mklink_repo("seebi", "dircolors-solarized", filename, linkpath)
     # tmux
     linkpath = getlinkpath("tmux")
     filename = ("tmuxcolors-256.conf" if NUMCOLORS >= 256
-                else "tmuxcolors-{variant}.conf").format_map(kwargs)
+                else f"tmuxcolors-{variant}.conf")
     mklink_repo("seebi", "tmux-colors-solarized", filename, linkpath)
     # vim
     linkpath = getlinkpath("vim")
-    filename = ("solarized-{variant}-256.vim" if NUMCOLORS >= 256
-                else "solarized-{variant}-16.vim").format_map(kwargs)
+    filename = (f"solarized-{variant}-256.vim" if NUMCOLORS >= 256
+                else f"solarized-{variant}-16.vim")
     mklink(filename, linkpath)
 
 
@@ -113,7 +112,7 @@ def main():
     """main"""
     print("Choose your option:")
     for idx, theme in enumerate(THEMES):
-        print("{idx}) {name}".format(idx=idx, name=theme[0]))
+        print(f"{idx}) {theme[0]}")
 
     try:
         ans = int(input("#? "))
