@@ -64,7 +64,7 @@ def default():
     rmlink_safe(linkname)
     # vim
     linkname = getlinkname("vim")
-    rmlink_safe(linkname)
+    mklink("/dev/null", linkname)
 
 
 def selenized_dark():

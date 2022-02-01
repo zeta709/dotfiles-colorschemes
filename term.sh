@@ -6,8 +6,8 @@ scriptpath=$(unset CDPATH && cd -- "$(dirname -- "$0")" >/dev/null 2>&1 && pwd -
 
 # replace the exsiting link only if it is a symbolic link
 mklink_safe() {
-	# target=$1; link=$2;
-	if [ -f "$2" ] && [ ! -L "$2" ]; then
+	# target=$1; link_name=$2;
+	if [ -e "$2" ] && [ ! -L "$2" ]; then
 		printf "'%s' is not a symbolic link; it will not be replaced.\n" "$2"
 		return 1
 	fi

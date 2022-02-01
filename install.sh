@@ -27,7 +27,7 @@ install() (
 	file="${scriptpath}/vim/.colors.vim"
 	[ ! -e "$file" ] && ln -s "/dev/null" "$file"
 	if ! grep -Fq ".colors.vim" "${HOME}/.vimrc"; then
-		printf 'source "%s"\n' $file >> "${HOME}/.vimrc"
+		printf "execute 'source' fnameescape('%s')\n" "$file" >> "${HOME}/.vimrc"
 	fi
 )
 
