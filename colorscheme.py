@@ -21,12 +21,12 @@ NUMCOLORS = curses.tigetnum("colors")
 
 def rmlink_safe(linkpath):
     """Remove the linkpath only if it is a symbolic link"""
-    if linkpath.exists():
-        if not linkpath.is_symlink():
-            print("'{}' is not a symbolic link; "
-                  "it will not be replaced.".format(str(linkpath)))
-            return False
+    if linkpath.is_symlink():
         linkpath.unlink()
+    if linkpath.exists():
+        print("'{}' is not a symbolic link; "
+              "it will not be replaced.".format(str(linkpath)))
+        return False
     return True
 
 
