@@ -8,129 +8,128 @@
 # TODO: clone/fetch repositories
 
 import curses
-import os
 import sys
 from pathlib import Path
 
 # TODO: use relpath if SCRIPTPATH is under HOME
-SCRIPTPATH = os.path.dirname(os.path.realpath(__file__))
-HOME = str(Path.home())
+SCRIPTPATH = Path(__file__).resolve().parent
+HOME = Path.home()
 
 curses.setupterm()
 NUMCOLORS = curses.tigetnum("colors")
 
 
-def rmlink_safe(linkname):
-    """Remove the linkname only if it is a symbolic link"""
-    if os.path.exists(linkname):
-        if not os.path.islink(linkname):
+def rmlink_safe(linkpath):
+    """Remove the linkpath only if it is a symbolic link"""
+    if linkpath.exists():
+        if not linkpath.is_symlink():
             print("'{}' is not a symbolic link; "
-                  "it will not be replaced.".format(linkname))
+                  "it will not be replaced.".format(str(linkpath)))
             return False
-        os.remove(linkname)
+        linkpath.unlink()
     return True
 
 
-def mklink(fullpath, linkname):
+def mklink(fullpath, linkpath):
     """Create a symbolic link to the path safely"""
-    if rmlink_safe(linkname):
-        os.symlink(fullpath, linkname)
+    if rmlink_safe(linkpath):
+        linkpath.symlink_to(fullpath)
 
 
-def mklink_repo(username, repository, path, linkname):
+def mklink_repo(username, repository, path, linkpath):
     """Create a symbolic link to the path safely"""
-    fullpath = "/".join([SCRIPTPATH, "repos", username, repository, path])
-    mklink(fullpath, linkname)
+    fullpath = SCRIPTPATH.joinpath("repos", username, repository, path)
+    mklink(fullpath, linkpath)
 
 
-def getlinkname(module):
-    """Get the linkname for the module"""
+def getlinkpath(module):
+    """Get the linkpath for the module"""
     if module == "dircolors":
-        return HOME + "/.dircolors"
+        return HOME.joinpath(".dircolors")
     if module == "tmux":
-        return SCRIPTPATH + "/tmux/.colors.tmux.conf"
+        return SCRIPTPATH.joinpath("tmux/.colors.tmux.conf")
     if module == "vim":
-        return SCRIPTPATH + "/vim/.colors.vim"
+        return SCRIPTPATH.joinpath("vim/.colors.vim")
     return None
 
 
 def default():
     """Default"""
     # dircolors
-    linkname = getlinkname("dircolors")
-    rmlink_safe(linkname)
+    linkpath = getlinkpath("dircolors")
+    rmlink_safe(linkpath)
     # tmux
-    linkname = getlinkname("tmux")
-    rmlink_safe(linkname)
+    linkpath = getlinkpath("tmux")
+    rmlink_safe(linkpath)
     # vim
-    linkname = getlinkname("vim")
-    mklink("/dev/null", linkname)
+    linkpath = getlinkpath("vim")
+    mklink("/dev/null", linkpath)
 
 
 def selenized_dark():
     """Selenized dark"""
     # dircolors
-    linkname = getlinkname("dircolors")
-    rmlink_safe(linkname)
+    linkpath = getlinkpath("dircolors")
+    rmlink_safe(linkpath)
     # tmux
-    linkname = getlinkname("tmux")
-    rmlink_safe(linkname)
+    linkpath = getlinkpath("tmux")
+    rmlink_safe(linkpath)
     # vim
-    linkname = getlinkname("vim")
-    fullpath = SCRIPTPATH + "/vim/selenized-dark.vim"
-    mklink(fullpath, linkname)
+    linkpath = getlinkpath("vim")
+    fullpath = SCRIPTPATH.joinpath("vim/selenized-dark.vim")
+    mklink(fullpath, linkpath)
 
 
 def selenized_light():
     """Selenized light"""
     # dircolors
-    linkname = getlinkname("dircolors")
-    rmlink_safe(linkname)
+    linkpath = getlinkpath("dircolors")
+    rmlink_safe(linkpath)
     # tmux
-    linkname = getlinkname("tmux")
-    rmlink_safe(linkname)
+    linkpath = getlinkpath("tmux")
+    rmlink_safe(linkpath)
     # vim
-    linkname = getlinkname("vim")
-    fullpath = SCRIPTPATH + "/vim/selenized-light.vim"
-    mklink(fullpath, linkname)
+    linkpath = getlinkpath("vim")
+    fullpath = SCRIPTPATH.joinpath("vim/selenized-light.vim")
+    mklink(fullpath, linkpath)
 
 
 def solarized_dark():
     """Solarized dark"""
     # dircolors
-    linkname = getlinkname("dircolors")
+    linkpath = getlinkpath("dircolors")
     filename = ("dircolors.256dark" if NUMCOLORS >= 256
                 else "dircolors.ansi-dark")
-    mklink_repo("seebi", "dircolors-solarized", filename, linkname)
+    mklink_repo("seebi", "dircolors-solarized", filename, linkpath)
     # tmux
-    linkname = getlinkname("tmux")
+    linkpath = getlinkpath("tmux")
     filename = ("tmuxcolors-256.conf" if NUMCOLORS >= 256
                 else "tmuxcolors-dark.conf")
-    mklink_repo("seebi", "tmux-colors-solarized", filename, linkname)
+    mklink_repo("seebi", "tmux-colors-solarized", filename, linkpath)
     # vim
-    linkname = getlinkname("vim")
-    fullpath = SCRIPTPATH + ("/vim/solarized-dark-256.vim" if NUMCOLORS >= 256
-                             else "/vim/solarized-dark-16.vim")
-    mklink(fullpath, linkname)
+    linkpath = getlinkpath("vim")
+    filename = ("vim/solarized-dark-256.vim" if NUMCOLORS >= 256
+                else "vim/solarized-dark-16.vim")
+    mklink(SCRIPTPATH.joinpath(filename), linkpath)
 
 
 def solarized_light():
     """Solarized light"""
     # dircolors
-    linkname = getlinkname("dircolors")
+    linkpath = getlinkpath("dircolors")
     filename = ("dircolors.ansi-universal" if NUMCOLORS >= 256
                 else "dircolors.ansi-light")
-    mklink_repo("seebi", "dircolors-solarized", filename, linkname)
+    mklink_repo("seebi", "dircolors-solarized", filename, linkpath)
     # tmux
-    linkname = getlinkname("tmux")
+    linkpath = getlinkpath("tmux")
     filename = ("tmuxcolors-256.conf" if NUMCOLORS >= 256
                 else "tmuxcolors-light.conf")
-    mklink_repo("seebi", "tmux-colors-solarized", filename, linkname)
+    mklink_repo("seebi", "tmux-colors-solarized", filename, linkpath)
     # vim
-    linkname = getlinkname("vim")
-    fullpath = SCRIPTPATH + ("/vim/solarized-light-256.vim" if NUMCOLORS >= 256
-                             else "/vim/solarized-light-16.vim")
-    mklink(fullpath, linkname)
+    linkpath = getlinkpath("vim")
+    filename = ("vim/solarized-light-256.vim" if NUMCOLORS >= 256
+                else "vim/solarized-light-16.vim")
+    mklink(SCRIPTPATH.joinpath(filename), linkpath)
 
 
 THEMES = [
