@@ -12,16 +12,15 @@ However, some installation procedure have not been automated yet.
 
 ### Other repositories
 
-Clone repositories you need:
-``` sh
-cd ".colorscheme/repos"
-mkdir "seebi" && cd "$_"
-git clone https://github.com/seebi/dircolors-solarized.git
-git clone https://github.com/seebi/tmux-colors-solarized.git
+You need to clone color scheme repositories.  Review `get_others.example.sh`
+and modify it as you need.
+Basically, it initializes a new git directory inside this directory, and add
+color scheme repositories as submodules.
+Thus, this repository itself will not be affected when you add or remove color
+scheme repositories. At the same time, it is easy to mange theme repositories.
 
-cd ".colorscheme/repos"
-mkdir "altercation" && cd "$_"
-git clone https://github.com/altercation/mutt-colors-solarized.git
+``` sh
+$ ./get_others.example.sh # review the file before execute it
 ```
 
 ### LS_COLORS for Selenized
