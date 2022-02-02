@@ -103,6 +103,8 @@ THEMES = [
     ("Default", default),
     ("Selenized dark (24-bit)", lambda: selenized(variant="dark")),
     ("Selenized light (24-bit)", lambda: selenized(variant="light")),
+    ("Selenized dark (24-bit)", lambda: selenized(variant="black")),
+    ("Selenized light (24-bit)", lambda: selenized(variant="white")),
     ("Solarized dark", lambda: solarized(variant="dark")),
     ("Solarized light", lambda: solarized(variant="light")),
 ]
