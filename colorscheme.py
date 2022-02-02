@@ -1,113 +1,20 @@
 #!/usr/bin/env python3
-# pylint: disable=W0511
-
 """Colorscheme"""
 
-# TODO: split utility functions and theme functions into two files
-# TODO: vim, mutt, etc.
-# TODO: clone/fetch repositories
-
-import curses
 import sys
-from pathlib import Path
+from typing import Callable, List, Tuple
 
-SCRIPTPATH = Path(__file__).resolve().parent
-HOME = Path.home()
+from default import Default
+from selenized import Selenized
+from solarized import Solarized
 
-curses.setupterm()
-NUMCOLORS = curses.tigetnum("colors")
+THEMES: List[Tuple[str, Callable]] = []
 
-
-def rmlink_safe(linkpath):
-    """Remove the linkpath only if it is a symbolic link"""
-    if linkpath.is_symlink():
-        linkpath.unlink()
-    if linkpath.exists():
-        print(f"'{linkpath}' is not a symbolic link; it will not be replaced.")
-        return False
-    return True
-
-
-def mklink(target, linkpath):
-    """Create or replace a symbolic link to the path safely"""
-    if rmlink_safe(linkpath):
-        linkpath.symlink_to(target)
-
-
-def mklink_repo(username, repository, path, linkpath):
-    """Create or replace a symbolic link to the path safely"""
-    try:
-        tmp = linkpath.relative_to(SCRIPTPATH)
-        base = Path("../" * (len(tmp.parents) - 1))
-    except ValueError:
-        try:
-            base = SCRIPTPATH.relative_to(linkpath.parent)
-        except ValueError:
-            base = SCRIPTPATH
-    path = base.joinpath("repos", username, repository, path)
-    mklink(path, linkpath)
-
-
-def getlinkpath(module):
-    """Get the linkpath for the module"""
-    if module == "dircolors":
-        return HOME.joinpath(".dircolors")
-    if module == "tmux":
-        return SCRIPTPATH.joinpath("tmux/.colors.tmux.conf")
-    if module == "vim":
-        return SCRIPTPATH.joinpath("vim/.colors.vim")
-    return None
-
-
-def default():
-    """Default"""
-    # dircolors
-    rmlink_safe(getlinkpath("dircolors"))
-    # tmux
-    rmlink_safe(getlinkpath("tmux"))
-    # vim
-    mklink("/dev/null", getlinkpath("vim"))
-
-
-def selenized(variant):
-    """Selenized dark/light"""
-    # dircolors
-    rmlink_safe(getlinkpath("dircolors"))
-    # tmux
-    rmlink_safe(getlinkpath("tmux"))
-    # vim
-    filename = f"selenized-{variant}.vim"
-    mklink(filename, getlinkpath("vim"))
-
-
-def solarized(variant):
-    """Solarized dark/light"""
-    # dircolors
-    linkpath = getlinkpath("dircolors")
-    filename = ("dircolors.256dark" if NUMCOLORS >= 256
-                else f"dircolors.ansi-{variant}")
-    mklink_repo("seebi", "dircolors-solarized", filename, linkpath)
-    # tmux
-    linkpath = getlinkpath("tmux")
-    filename = ("tmuxcolors-256.conf" if NUMCOLORS >= 256
-                else f"tmuxcolors-{variant}.conf")
-    mklink_repo("seebi", "tmux-colors-solarized", filename, linkpath)
-    # vim
-    linkpath = getlinkpath("vim")
-    filename = (f"solarized-{variant}-256.vim" if NUMCOLORS >= 256
-                else f"solarized-{variant}-16.vim")
-    mklink(filename, linkpath)
-
-
-THEMES = [
-    ("Default", default),
-    ("Selenized dark (24-bit)", lambda: selenized(variant="dark")),
-    ("Selenized light (24-bit)", lambda: selenized(variant="light")),
-    ("Selenized dark (24-bit)", lambda: selenized(variant="black")),
-    ("Selenized light (24-bit)", lambda: selenized(variant="white")),
-    ("Solarized dark", lambda: solarized(variant="dark")),
-    ("Solarized light", lambda: solarized(variant="light")),
-]
+Default().install(THEMES)
+for variant in Selenized.get_variants():
+    Selenized(variant).install(THEMES)
+for variant in Solarized.get_variants():
+    Solarized(variant).install(THEMES)
 
 
 def main():
@@ -126,11 +33,12 @@ def main():
     if ans < 0 or ans >= len(THEMES):
         print("Invalid input")
         sys.exit(1)
-    if not callable(THEMES[ans][1]):
+
+    func = THEMES[ans][1]
+    if not callable(func):
         print("Error")
         sys.exit(1)
-
-    THEMES[ans][1]()
+    func()
 
 
 if __name__ == '__main__':
