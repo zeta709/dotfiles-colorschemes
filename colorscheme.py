@@ -1,37 +1,15 @@
 #!/usr/bin/env python3
-# pylint: disable=W0511
 
-"""Colorscheme"""
-
-# TODO: split utility functions and theme functions into two files
-# TODO: vim, mutt, etc.
-# TODO: clone/fetch repositories
+"""Color scheme selector"""
 
 import curses
 import sys
+from functools import partial
 from pathlib import Path
 
+from utils import rmlink_safe, mklink
+
 SCRIPTPATH = Path(__file__).resolve().parent
-HOME = Path.home()
-
-curses.setupterm()
-NUMCOLORS = curses.tigetnum("colors")
-
-
-def rmlink_safe(linkpath):
-    """Remove the linkpath only if it is a symbolic link"""
-    if linkpath.is_symlink():
-        linkpath.unlink()
-    if linkpath.exists():
-        print(f"'{linkpath}' is not a symbolic link; it will not be replaced.")
-        return False
-    return True
-
-
-def mklink(target, linkpath):
-    """Create or replace a symbolic link to the path safely"""
-    if rmlink_safe(linkpath):
-        linkpath.symlink_to(target)
 
 
 def mklink_repo(username, repository, path, linkpath):
@@ -48,13 +26,13 @@ def mklink_repo(username, repository, path, linkpath):
     mklink(path, linkpath)
 
 
-def getlinkpath(module):
-    """Get the linkpath for the module"""
-    if module == "dircolors":
-        return HOME.joinpath(".dircolors")
-    if module == "tmux":
+def getlinkpath(app):
+    """Get the linkpath for the app"""
+    if app == "dircolors":
+        return Path.home().joinpath(".dircolors")
+    if app == "tmux":
         return SCRIPTPATH.joinpath("tmux/.colors.tmux.conf")
-    if module == "vim":
+    if app == "vim":
         return SCRIPTPATH.joinpath("vim/.colors.vim")
     return None
 
@@ -70,50 +48,46 @@ def default():
 
 
 def selenized(variant):
-    """Selenized dark/light"""
+    """Selenized"""
     # dircolors
     rmlink_safe(getlinkpath("dircolors"))
     # tmux
     rmlink_safe(getlinkpath("tmux"))
     # vim
-    filename = f"selenized-{variant}.vim"
-    mklink(filename, getlinkpath("vim"))
+    mklink(f"selenized-{variant}.vim", getlinkpath("vim"))
 
 
 def solarized(variant):
-    """Solarized dark/light"""
+    """Solarized"""
+    curses.setupterm()
+    numcolors = curses.tigetnum("colors")
     # dircolors
     linkpath = getlinkpath("dircolors")
-    filename = ("dircolors.256dark" if NUMCOLORS >= 256
+    filename = ("dircolors.256dark" if numcolors >= 256
                 else f"dircolors.ansi-{variant}")
     mklink_repo("seebi", "dircolors-solarized", filename, linkpath)
     # tmux
     linkpath = getlinkpath("tmux")
-    filename = ("tmuxcolors-256.conf" if NUMCOLORS >= 256
+    filename = ("tmuxcolors-256.conf" if numcolors >= 256
                 else f"tmuxcolors-{variant}.conf")
     mklink_repo("seebi", "tmux-colors-solarized", filename, linkpath)
     # vim
     linkpath = getlinkpath("vim")
-    filename = (f"solarized-{variant}-256.vim" if NUMCOLORS >= 256
+    filename = (f"solarized-{variant}-256.vim" if numcolors >= 256
                 else f"solarized-{variant}-16.vim")
     mklink(filename, linkpath)
 
 
-THEMES = [
-    ("Default", default),
-    ("Selenized dark (24-bit)", lambda: selenized(variant="dark")),
-    ("Selenized light (24-bit)", lambda: selenized(variant="light")),
-    ("Selenized dark (24-bit)", lambda: selenized(variant="black")),
-    ("Selenized light (24-bit)", lambda: selenized(variant="white")),
-    ("Solarized dark", lambda: solarized(variant="dark")),
-    ("Solarized light", lambda: solarized(variant="light")),
-]
-
-
 def main():
     """main"""
+    themes = [("Default", default)]
+    themes.extend([(f"Selenized {var} (24-bit)", partial(selenized, var))
+                   for var in ["dark", "light", "black", "white"]])
+    themes.extend([(f"Solarized {var}", partial(solarized, var))
+                   for var in ["dark", "light"]])
+
     print("Choose your option:")
-    for idx, theme in enumerate(THEMES):
+    for idx, theme in enumerate(themes):
         print(f"{idx}) {theme[0]}")
 
     try:
@@ -123,14 +97,14 @@ def main():
     except ValueError:
         print("Invalid input")
         sys.exit(1)
-    if ans < 0 or ans >= len(THEMES):
+    if ans < 0 or ans >= len(themes):
         print("Invalid input")
         sys.exit(1)
-    if not callable(THEMES[ans][1]):
+    func = themes[ans][1]
+    if not callable(func):
         print("Error")
         sys.exit(1)
-
-    THEMES[ans][1]()
+    func()
 
 
 if __name__ == '__main__':
