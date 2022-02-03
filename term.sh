@@ -1,8 +1,8 @@
 #!/bin/sh
 # vim: noexpandtab:sw=4:ts=4
 
-# NOTE: this way to get the scriptpath is not perfect
-scriptpath=$(unset CDPATH && cd -- "$(dirname -- "$0")" && pwd -P)
+# NOTE: this way to get the scriptdir is not perfect
+scriptdir=$(unset CDPATH && cd -- "$(dirname -- "$0")" && pwd -P)
 
 # replace the exsiting link only if it is a symbolic link
 mklink_safe() {
@@ -29,14 +29,14 @@ term() (
 		esac
 	done
 
-	cd "${scriptpath}/sh" || return 1
+	cd "${scriptdir}/sh" || return 1
 	printf 'Do you want to set TERM (y/[n])?\n' && read -r ans
 	case $ans in
 		y|Y) mklink_safe "$file1" ".term.sh";;
 		*) mklink_safe "/dev/null" ".term.sh";;
 	esac
 
-	cd "${scriptpath}/tmux" || return 1
+	cd "${scriptdir}/tmux" || return 1
 	mklink_safe "$file2" ".term.tmux.conf"
 )
 

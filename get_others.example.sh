@@ -1,8 +1,8 @@
 #!/bin/sh
 # vim: noexpandtab:sw=4:ts=4
 
-# NOTE: this way to get the scriptpath is not perfect
-scriptpath=$(unset CDPATH && cd -- "$(dirname -- "$0")" && pwd -P)
+# NOTE: this way to get the scriptdir is not perfect
+scriptdir=$(unset CDPATH && cd -- "$(dirname -- "$0")" && pwd -P)
 
 add() (
 	mkdir -p "$1" || return 1
@@ -10,11 +10,11 @@ add() (
 	git submodule add --depth 1 "$2"
 )
 
-cd "${scriptpath}" || exit 1
+cd "$scriptdir" || exit 1
 mkdir -p repos || exit 1
 cd repos || exit 1
 
-if git rev-parse --absolute-git-dir > /dev/null 2>&1; then
+if [ -d ".git" ]; then
 	echo "It's already a git directory!"
 	exit 1
 fi
