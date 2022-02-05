@@ -1,30 +1,35 @@
-"""define paths used by the color scheme selector"""
+"""Define paths used by the color scheme selector."""
 
 from pathlib import Path
 
-SCRIPTPATH = Path(__file__).resolve().parent
+SCRIPTDIR = Path(__file__).resolve().parent
 LINKPATH = {
     "dircolors": Path.home().joinpath(".dircolors"),
-    "mutt": SCRIPTPATH.joinpath("mutt/.colors.muttrc"),
-    "tmux": SCRIPTPATH.joinpath("tmux/.colors.tmux.conf"),
-    "vim": SCRIPTPATH.joinpath("vim/.colors.vim")
+    "mutt": SCRIPTDIR.joinpath("mutt/.colors.muttrc"),
+    "tmux": SCRIPTDIR.joinpath("tmux/.colors.tmux.conf"),
+    "vim": SCRIPTDIR.joinpath("vim/.colors.vim")
 }
 
 
 def gettargetpath(username, repository, path, linkpath):
-    """Create or replace a symbolic link to the path safely"""
+    """Returns the targetpath defined by username, repository, and path.
+
+    Returns a relative path if either the linkpath is relative to the SCRIPTDIR
+    or the SCRIPTDIR is relative to the linkpath's parent.
+    Otherwise, returns an absolute path.
+    """
     try:
-        tmp = linkpath.relative_to(SCRIPTPATH)
+        tmp = linkpath.relative_to(SCRIPTDIR)
         base = Path("../" * (len(tmp.parents) - 1))
     except ValueError:
         try:
-            base = SCRIPTPATH.relative_to(linkpath.parent)
+            base = SCRIPTDIR.relative_to(linkpath.parent)
         except ValueError:
-            base = SCRIPTPATH
+            base = SCRIPTDIR
     path = base.joinpath("repos", username, repository, path)
     return path
 
 
 def getlinkpath(app):
-    """Get the linkpath for the app"""
+    """Get the linkpath for the app."""
     return LINKPATH[app]

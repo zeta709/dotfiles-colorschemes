@@ -13,9 +13,9 @@ do_source_cmd() {
 	[ ! -e "$color_file" ] && ln -s "/dev/null" "${scriptdir}/${color_file}"
 	if ! grep -Fq "$color_file" "$rc_file"; then
 		printf 'source "%s"\n' "${scriptdir}/${color_file}" >> "$rc_file"
-		printf "Installed: '%s' in '%s'\n" $color_file $rc_file
+		printf "Installed: '%s' in '%s'\n" "$color_file" "$rc_file"
 	else
-		printf "Skip: '%s' for '%s'\n" $color_file $rc_file
+		printf "Skip: '%s' for '%s'\n" "$color_file" "$rc_file"
 	fi
 }
 

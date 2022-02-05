@@ -1,10 +1,10 @@
-"""utils"""
+"""Utils"""
 
 from pathlib import Path
 
 
 def rmlink_safe(linkpath: Path):
-    """Remove the linkpath only if it is a symbolic link"""
+    """Remove the linkpath only if it is a symbolic link."""
     if linkpath.is_symlink():
         linkpath.unlink()
     if linkpath.exists():
@@ -14,6 +14,6 @@ def rmlink_safe(linkpath: Path):
 
 
 def mklink(target, linkpath: Path):
-    """Create or replace a symbolic link to the path safely"""
+    """Create or replace a symbolic link to the path safely."""
     if rmlink_safe(linkpath):
         linkpath.symlink_to(target)

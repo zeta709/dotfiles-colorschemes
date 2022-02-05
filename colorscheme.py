@@ -39,13 +39,15 @@ def solarized(variant):
     linkpath = getlinkpath("mutt")
     filename = (f"mutt-colors-solarized-{variant}-"
                 + ("256.muttrc" if numcolors >= 256 else "16.muttrc"))
-    target = gettargetpath("altercation", "mutt-colors-solarized", filename, linkpath)
+    target = gettargetpath("altercation", "mutt-colors-solarized", filename,
+                           linkpath)
     mklink(target, linkpath)
     # tmux
     linkpath = getlinkpath("tmux")
     filename = ("tmuxcolors-256.conf" if numcolors >= 256
                 else f"tmuxcolors-{variant}.conf")
-    target = gettargetpath("seebi", "tmux-colors-solarized", filename, linkpath)
+    target = gettargetpath("seebi", "tmux-colors-solarized", filename,
+                           linkpath)
     mklink(target, linkpath)
     # vim
     linkpath = getlinkpath("vim")
