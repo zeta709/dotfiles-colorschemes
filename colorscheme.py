@@ -14,7 +14,7 @@ def default():
     """Default"""
     for app in ["dircolors", "tmux"]:
         rmlink_safe(getlinkpath(app))
-    for app in ["vim"]:
+    for app in ["mutt", "vim"]:
         mklink("/dev/null", getlinkpath(app))
 
 
@@ -34,6 +34,12 @@ def solarized(variant):
     filename = ("dircolors.256dark" if numcolors >= 256
                 else f"dircolors.ansi-{variant}")
     target = gettargetpath("seebi", "dircolors-solarized", filename, linkpath)
+    mklink(target, linkpath)
+    # mutt
+    linkpath = getlinkpath("mutt")
+    filename = (f"mutt-colors-solarized-{variant}-"
+                + ("256.muttrc" if numcolors >= 256 else "16.muttrc"))
+    target = gettargetpath("altercation", "mutt-colors-solarized", filename, linkpath)
     mklink(target, linkpath)
     # tmux
     linkpath = getlinkpath("tmux")

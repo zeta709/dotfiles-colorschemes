@@ -5,6 +5,7 @@ from pathlib import Path
 SCRIPTPATH = Path(__file__).resolve().parent
 LINKPATH = {
     "dircolors": Path.home().joinpath(".dircolors"),
+    "mutt": SCRIPTPATH.joinpath("mutt/.colors.muttrc"),
     "tmux": SCRIPTPATH.joinpath("tmux/.colors.tmux.conf"),
     "vim": SCRIPTPATH.joinpath("vim/.colors.vim")
 }

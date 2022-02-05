@@ -26,6 +26,10 @@ install() (
 	[ -r "${HOME}/.bashrc" ] && do_source_cmd "sh/.term.sh" "${HOME}/.bashrc"
 	[ -r "${HOME}/.zshrc" ] && do_source_cmd "sh/.term.sh" "${HOME}/.zshrc"
 
+	# mutt
+	mkdir -p "mutt"
+	do_source_cmd "mutt/.colors.muttrc" "${HOME}/.muttrc"
+
 	# tmux
 	do_source_cmd "tmux/.term.tmux.conf" "${HOME}/.tmux.conf"
 	do_source_cmd "tmux/.colors.tmux.conf" "${HOME}/.tmux.conf"
