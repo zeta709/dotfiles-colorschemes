@@ -17,7 +17,7 @@ and modify it as you need.
 Basically, it initializes a new git directory inside this directory, and add
 color scheme repositories as submodules.
 Thus, this repository itself will not be affected when you add or remove color
-scheme repositories. At the same time, it is easy to mange theme repositories.
+scheme repositories. At the same time, it is easy to manage theme repositories.
 
 ``` sh
 $ ./get_others.example.sh # review the file before execute it
