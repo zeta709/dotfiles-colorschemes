@@ -12,9 +12,9 @@ from paths import gettargetpath, getlinkpath
 
 def default():
     """Default"""
-    for app in ["dircolors", "tmux"]:
+    for app in ["dircolors"]:
         rmlink_safe(getlinkpath(app))
-    for app in ["mutt", "vim"]:
+    for app in ["mutt", "tmux", "vim"]:
         mklink("/dev/null", getlinkpath(app))
 
 
@@ -73,14 +73,14 @@ def main():
     except EOFError:
         return 0
     except ValueError:
-        print("Invalid input")
+        print("Invalid input", file=sys.stderr)
         return 1
     if ans < 0 or ans >= len(themes):
-        print("Invalid input")
+        print("Invalid input", file=sys.stderr)
         return 1
     func = themes[ans][1]
     if not callable(func):
-        print("Error")
+        print("Error", file=sys.stderr)
         return 1
     func()
     return 0
