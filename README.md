@@ -5,7 +5,10 @@
 ## Installation
 
 ``` sh
-$ ./install.sh
+cd "$HOME"
+git clone https://github.com/zeta709/dotfiles-colorschemes.git .colorschemes
+cd .colorschemes
+./install.sh
 ```
 
 However, some installation procedure have not been automated yet.
@@ -20,7 +23,7 @@ Thus, this repository itself will not be affected when you add or remove color
 scheme repositories. At the same time, it is easy to manage theme repositories.
 
 ``` sh
-$ ./get_others.example.sh # review the file before execute it
+./get_others.example.sh # review the file before execute it
 ```
 
 ### LS_COLORS for Selenized

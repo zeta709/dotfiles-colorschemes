@@ -19,7 +19,7 @@ if [ -d ".git" ]; then
 	exit 1
 fi
 
-git init . || exit 1
+git init -b main . || exit 1
 git commit --allow-empty -m "Initial commit" || exit 1
 
 add "seebi" "https://github.com/seebi/dircolors-solarized.git"
